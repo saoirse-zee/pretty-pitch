@@ -5,6 +5,7 @@ var maxes = []
 const SENSITIVITY = 50; // How fast the avg moves
 const LOWER_BOUND = 150; // Hz
 const UPPER_BOUND = 300; // Hz
+var gap = 20 // Granularity - gap between frequencies that are tested.
 
 function setup()
 {
@@ -34,7 +35,7 @@ function draw()
 	fft.analyze();
 
 	var max = {freq: 0, energy: 0}
-	var gap = 20
+	
 	for (let freq = LOWER_BOUND; freq < UPPER_BOUND; freq += gap) {
 		// Grid
 		drawFreqLine(freq, 1);
@@ -42,13 +43,16 @@ function draw()
 		textAlign(CENTER)
 		text(freq, width/2, y)
 
-		// Find primary frequency
+		// Get energy of this freq, and draw it
 		const energy = fft.getEnergy(freq, freq + gap)
+		drawFreqLine(freq, 5, energy)
+
+		// Find primary frequency
 		max = (energy > max.energy) ? {freq, energy} : max
 	}
 	
 	// Rolling average
-	if (micLevel > 0.005) {
+	if (micLevel > 0.001) {
 		maxes.push(max)
 	}
 	if (maxes.length > SENSITIVITY) {
@@ -57,7 +61,7 @@ function draw()
 	const sumFreq = maxes.reduce((s, m) => s + m.freq, 0)
 	const avgFreq = sumFreq / maxes.length
 	
-	drawFreqLine(avgFreq);
+	drawFreqLine(avgFreq, 10, 10);
 	
 	spectrum = fft.analyze(); // QUESTION: Is this being used?
 	
@@ -66,12 +70,12 @@ function draw()
 	ellipse(width / 2, constrain(height - micLevel * height * 5, 0, height), 10, 10);
 }
 
-function drawFreqLine(freq, thickness=10)
+function drawFreqLine(freq, thickness=10, energy=255)
 {
 	const line = {
 		x: 0,
 		y: getY(freq),
-		w: width,
+		w: width * energy/255,
 		h: thickness,
 	};
 	fill(0, 50, 250);
@@ -81,9 +85,4 @@ function drawFreqLine(freq, thickness=10)
 function getY(freq)
 {
 	return map(freq, LOWER_BOUND, UPPER_BOUND, height, 0);
-}
-
-function getX(frequency)
-{
-	return frequency
 }
