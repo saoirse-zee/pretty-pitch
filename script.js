@@ -68,11 +68,13 @@ function drawLabel(freq)
 function drawPitchLine(freq) {
 	const c = color('hsla(190, 100%, 50%, 0.5)');
 	fill(c);
+	const h = 15;
+	const y = getY(freq) - h; // Adjust for line thickness
 	const line = {
 		x: 0,
-		y: getY(freq),
+		y,
 		w: width,
-		h: 15,
+		h,
 	};
 	rect(line.x, line.y, line.w, line.h);
 }
