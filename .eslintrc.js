@@ -14,6 +14,7 @@ module.exports = {
         "background": false,
         "noStroke": false,
         "rect": false,
+        "rectMode": false,
         "map": false,
         "height": false,
         "width": false,
@@ -23,5 +24,12 @@ module.exports = {
         "textSize": false,
         "textAlign": false,
         "CENTER": false,
+        "mousePressed": false,
+        "mouseReleased": false,
+        "mouseDragged": false,
+        "mouseY": false,
+
+        // browser
+        "localStorage": false,
     }
 };

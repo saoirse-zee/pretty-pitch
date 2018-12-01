@@ -4,7 +4,11 @@ const maxes = []
 const SENSITIVITY = 50 // How fast the avg moves
 const LOWER_BOUND = 100 // Hz
 const UPPER_BOUND = 250 // Hz
+let lavaFreq = 200 // Hz
 const gap = 1 // Granularity - gap between frequencies that are tested.
+let mouseOnLava = false
+let lavaLineLocked = false
+lavaFreq = localStorage.getItem('lavaFreq')
 
 /* eslint-disable-next-line */
 function setup () {
@@ -23,6 +27,11 @@ function draw() {
   noStroke()
   const micLevel = mic.getLevel()
   fft.analyze()
+
+  const lavaY = getY(lavaFreq)
+  const bottomLavaRect = lavaY + 8
+  const topLavaRect = lavaY - 8
+  mouseOnLava = (mouseY < bottomLavaRect) && (mouseY > topLavaRect)
 
   let max = { freq: 0, energy: 0 }
 
@@ -49,6 +58,7 @@ function draw() {
   const rollingAvgFreq = sumOfMaxFrequencies / maxes.length
 
   drawPitchLine(rollingAvgFreq)
+  drawLavaLine(lavaFreq)
 }
 
 function drawLabel (freq) {
@@ -58,39 +68,84 @@ function drawLabel (freq) {
   if (freq % 10 === 0) {
     const x = width / 2
     const y = getY(freq)
-
-    text(freq, x, y)
+    text(freq, x, y + 6)
   }
 }
 
 function drawPitchLine (freq) {
   const c = color('hsla(190, 100%, 50%, 0.5)')
   fill(c)
-  const h = 15
-  const y = getY(freq) - h // Adjust for line thickness
   const line = {
-    x: 0,
-    y,
+    x: width / 2,
+    y: getY(freq),
     w: width,
-    h
+    h: 15
   }
   rect(line.x, line.y, line.w, line.h)
 }
 
-function drawFreqLine (freq, thickness = 10, energy = 255) {
+function drawLavaLine (freq) {
+  const c = mouseOnLava
+    ? color('hsla(360, 100%, 50%, 0.8)')
+    : color('hsla(340, 100%, 50%, 0.5)')
+  fill(c)
+  const h = mouseOnLava ? 18 : 15
+  const y = getY(freq)
+  const line = {
+    x: width / 2,
+    y,
+    w: width,
+    h
+  }
+  rectMode(CENTER)
+  rect(line.x, line.y, line.w, line.h)
+}
+
+function drawFreqLine (freq, thickness, energy = 255) {
   const c = color('hsla(190, 100%, 50%, 0.1)')
   fill(c)
-  const w = width * energy / 255
-  const x = (width - w) / 2
   const line = {
-    x,
+    x: width / 2,
     y: getY(freq),
-    w,
+    w: width * energy / 255,
     h: thickness
   }
   rect(line.x, line.y, line.w, line.h)
 }
 
+/**
+ * Get y position from frequency
+ */
 function getY (freq) {
   return map(freq, LOWER_BOUND, UPPER_BOUND, height, 0)
+}
+
+/**
+ * Get frequency from y position
+ */
+function getFreq (y) {
+  return map(y, height, 0, LOWER_BOUND, UPPER_BOUND)
+}
+
+// eslint-disable-next-line no-unused-vars
+function mousePressed () {
+  if (mouseOnLava) {
+    lavaLineLocked = true
+  } else {
+    lavaLineLocked = false
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+function mouseDragged () {
+  if (lavaLineLocked) {
+    lavaFreq = getFreq(mouseY)
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+function mouseReleased () {
+  if (lavaLineLocked) {
+    localStorage.setItem('lavaFreq', lavaFreq)
+  }
 }
