@@ -1,10 +1,10 @@
-var mic
-var fft
-var maxes = []
+let mic
+let fft
+const maxes = []
 const SENSITIVITY = 50 // How fast the avg moves
 const LOWER_BOUND = 100 // Hz
 const UPPER_BOUND = 250 // Hz
-var gap = 1 // Granularity - gap between frequencies that are tested.
+const gap = 1 // Granularity - gap between frequencies that are tested.
 
 /* eslint-disable-next-line */
 function setup () {
@@ -18,13 +18,13 @@ function setup () {
 }
 
 /* eslint-disable-next-line */
-function draw () {
+function draw() {
   background(20)
   noStroke()
   const micLevel = mic.getLevel()
   fft.analyze()
 
-  var max = { freq: 0, energy: 0 }
+  let max = { freq: 0, energy: 0 }
 
   for (let freq = LOWER_BOUND; freq < UPPER_BOUND; freq += gap) {
     // Get energy of this freq

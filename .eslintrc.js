@@ -3,6 +3,10 @@ module.exports = {
     "plugins": [
         "standard"
     ],
+    "rules": {
+        "no-var": "error",
+        "brace-style": ["error", "1tbs"]
+    },
     "globals": {
         // p5 globals
         "createCanvas": false,
