@@ -1,0 +1,29 @@
+{
+  "name": "pretty-pitch",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint script.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saoirse-zee/pretty-pitch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saoirse-zee/pretty-pitch/issues"
+  },
+  "homepage": "https://github.com/saoirse-zee/pretty-pitch#readme"
+}
