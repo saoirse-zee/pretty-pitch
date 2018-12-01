@@ -20,7 +20,7 @@ function setup()
 
 function draw()
 {
-	background(0);
+	background(20);
 	noStroke();
 	micLevel = mic.getLevel();
 	fft.analyze();
@@ -28,18 +28,15 @@ function draw()
 	var max = {freq: 0, energy: 0}
 	
 	for (let freq = LOWER_BOUND; freq < UPPER_BOUND; freq += gap) {
-		// Labels
-		if (freq % 10 === 0) {
-			const y = getY(freq)
-			text(freq, 550, y)
-		}
-
-		// Get energy of this freq, and draw it
+		// Get energy of this freq
 		const energy = fft.getEnergy(freq, freq + gap)
-		drawFreqLine(freq, 1, energy)
-
+		
 		// Find primary frequency
 		max = (energy > max.energy) ? {freq, energy} : max
+		
+		// Draw
+		drawFreqLine(freq, 1, energy)
+		drawLabel(freq);
 	}
 	
 	// Rolling average of the primary frequency. This makes the graph less jumpy.
@@ -52,18 +49,46 @@ function draw()
 	const sumOfMaxFrequencies = maxes.reduce((s, m) => s + m.freq, 0)
 	const rollingAvgFreq = sumOfMaxFrequencies / maxes.length
 	
-	drawFreqLine(rollingAvgFreq, 10, 255);
+	drawPitchLine(rollingAvgFreq);
 }
 
-function drawFreqLine(freq, thickness=10, energy=255)
+function drawLabel(freq)
 {
+	fill(207, 196, 102);
+	textSize(16);
+	textAlign(CENTER);
+	if (freq % 10 === 0) {
+		const x = width / 2;
+		const y = getY(freq);
+		
+		text(freq, x, y);
+	}
+}
+
+function drawPitchLine(freq) {
+	const c = color('hsla(190, 100%, 50%, 0.5)');
+	fill(c);
 	const line = {
 		x: 0,
 		y: getY(freq),
-		w: width * energy/255,
+		w: width,
+		h: 15,
+	};
+	rect(line.x, line.y, line.w, line.h);
+}
+
+function drawFreqLine(freq, thickness=10, energy=255)
+{	
+	const c = color('hsla(190, 100%, 50%, 0.1)');
+	fill(c);
+	const w = width * energy/255;
+	const x = (width - w) / 2;
+	const line = {
+		x,
+		y: getY(freq),
+		w,
 		h: thickness,
 	};
-	fill(0, 50, 250);
 	rect(line.x, line.y, line.w, line.h);
 }
 
