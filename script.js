@@ -3,16 +3,18 @@ var spectrum;
 var fft;
 var maxes = []
 const SENSITIVITY = 50; // How fast the avg moves
-const LOWER_BOUND = 150; // Hz
+const LOWER_BOUND = 100; // Hz
 const UPPER_BOUND = 250; // Hz
-var gap = 2 // Granularity - gap between frequencies that are tested.
+var gap = 1 // Granularity - gap between frequencies that are tested.
 
 function setup()
 {
 	createCanvas(640, 600);
 	mic = new p5.AudioIn()
 	mic.start();
-	fft = new p5.FFT();
+	const smoothing = 0.8;
+	const bins = 2**13;
+	fft = new p5.FFT(smoothing, bins);
 	fft.setInput(mic)
 }
 
@@ -34,7 +36,7 @@ function draw()
 
 		// Get energy of this freq, and draw it
 		const energy = fft.getEnergy(freq, freq + gap)
-		drawFreqLine(freq, 5, energy)
+		drawFreqLine(freq, 1, energy)
 
 		// Find primary frequency
 		max = (energy > max.energy) ? {freq, energy} : max
