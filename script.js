@@ -4,11 +4,10 @@ const maxes = []
 const SENSITIVITY = 50 // How fast the avg moves
 const LOWER_BOUND = 100 // Hz
 const UPPER_BOUND = 250 // Hz
-let lavaFreq = 200 // Hz
 const gap = 1 // Granularity - gap between frequencies that are tested.
 let mouseOnLava = false
 let lavaLineLocked = false
-lavaFreq = localStorage.getItem('lavaFreq')
+let lavaFreq = localStorage.getItem('lavaFreq') || 200
 
 /* eslint-disable-next-line */
 function setup () {
