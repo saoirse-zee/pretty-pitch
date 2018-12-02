@@ -72,13 +72,16 @@ function drawLabel (freq) {
 }
 
 function drawPitchLine (freq) {
-  const c = color('hsla(190, 100%, 50%, 0.5)')
+  const warningColor = color('hsla(200, 100%, 50%, 0.7)')
+  const okayColor = color('hsla(190, 50%, 70%, 0.5)')
+  const c = freq < lavaFreq ? warningColor : okayColor
+  const h = freq < lavaFreq ? 20 : 3
   fill(c)
   const line = {
     x: width / 2,
     y: getY(freq),
     w: width,
-    h: 15
+    h
   }
   rect(line.x, line.y, line.w, line.h)
 }
